@@ -6,11 +6,22 @@ pipeline {
                 git credentialsId: 'gitlab_user_threepoints', url: 'https://github.com/juangaav/threepoints_devops_webserver'
             }
         }
-        stage('Stage: Pruebas de SAST') {
-            steps {
-                echo 'Ejecución de  pruebas de SAST'
+        stage('Parallel Stages') {
+            parallel {
+                stage('Stage: Pruebas de SAST') {
+                    steps {
+                        echo 'Ejecución de  pruebas de SAST'
+                    }
+                }
+                stage('Imprimir Env') {
+                    steps {
+                        script {
+                            echo "El WORKSPACE es: ${env.WORKSPACE}"
+                        }
+                    }
+                }
             }
-        }  
+        }
         stage('Build') {
             steps {
                 script {
