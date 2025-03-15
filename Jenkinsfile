@@ -1,5 +1,8 @@
 pipeline {
     agent any
+    parameters {
+        credentials(name: 'Credentials_Threepoints', description: 'Credenciales de usuario y contraseña', defaultValue: 'admin:password', credentialType: 'com.cloudbees.plugins.credentials.impl.UsernamePasswordCredentialsImpl')
+    }
     stages {
         stage('Stage: Checkout') {
             steps {
@@ -22,6 +25,20 @@ pipeline {
                 }
             }
         }
+        stage('Configurar archivo') {
+            steps {
+                script {
+                    withCredentials([usernamePassword(credentialsId: 'Credentials_Threepoints', passwordVariable: 'PASSWORD', usernameVariable: 'USER')]) {
+                        writeFile file: 'credentials.ini', text: """
+                        [credentials]
+                        user=${USER}
+                        password=${PASSWORD}
+                        """
+                    }
+                    archiveArtifacts artifacts: 'credentials.ini'
+                }
+            }
+        }
         stage('Build') {
             steps {
                 script {
@@ -29,7 +46,7 @@ pipeline {
                     if (!fileExists(dockerPath.replaceAll('"', ''))) {
                         error "Docker executable not found at ${dockerPath}"
                     }
-                    
+
                     bat "${dockerPath} build -t devops_ws ."
                 }
             }
