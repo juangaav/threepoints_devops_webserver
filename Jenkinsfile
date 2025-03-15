@@ -28,7 +28,7 @@ pipeline {
         stage('Configurar archivo') {
             steps {
                 script {
-                    withCredentials([usernamePassword(credentialsId: 'Credentials_Threepoints')]) {
+                    withCredentials([usernamePassword(credentialsId: 'Credentials_Threepoints', passwordVariable: 'PASSWORD', usernameVariable: 'USER')]) {
                         writeFile file: 'credentials.ini', text: """
                         [credentials]
                         user=${USER}
@@ -47,7 +47,6 @@ pipeline {
                         error "Docker executable not found at ${dockerPath}"
                     }
                     
-                    // Execute the Docker build command
                     bat "${dockerPath} build -t devops_ws ."
                 }
             }
@@ -61,7 +60,7 @@ pipeline {
             steps {
                 script {
                     def scannerHome = tool 'Sonar-scanner'
-                    withSonarQubeEnv('Sonar Local') { // If you have configured more than one global server connection, you can specify its name
+                    withSonarQubeEnv('Sonar Local') {
                         bat "${scannerHome}/bin/sonar-scanner"
                     }
                 }      
