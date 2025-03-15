@@ -13,7 +13,15 @@ pipeline {
             parallel {
                 stage('Stage: Pruebas de SAST') {
                     steps {
-                        echo 'Ejecución de  pruebas de SAST'
+                        script {
+                            def scannerHome = tool 'Sonar-scanner'
+                            withSonarQubeEnv('Sonar Local') {
+                                bat "${scannerHome}/bin/sonar-scanner"
+                            }
+                            timeout(time: 1, unit: 'HOURS') {
+                                waitForQualityGate(abortPipeline: false)
+                            }
+                        }
                     }
                 }
                 stage('Imprimir Env') {
@@ -55,16 +63,6 @@ pipeline {
         stage('SCM') {
             steps {
                 checkout scm
-            }
-        }
-        stage('SonarQube Analysis') {
-            steps {
-                script {
-                    def scannerHome = tool 'Sonar-scanner'
-                    withSonarQubeEnv('Sonar Local') {
-                        bat "${scannerHome}/bin/sonar-scanner"
-                    }
-                }      
             }
         }
     }
