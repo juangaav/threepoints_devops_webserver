@@ -18,9 +18,6 @@ pipeline {
                             withSonarQubeEnv('Sonar Local') {
                                 bat "${scannerHome}/bin/sonar-scanner"
                             }
-                            timeout(time: 30, unit: 'SECONDS') {
-                                waitForQualityGate(abortPipeline: false)
-                            }
                         }
                     }
                 }
@@ -80,16 +77,6 @@ pipeline {
         stage('SCM') {
             steps {
                 checkout scm
-            }
-        }
-        stage('SonarQube Analysis') {
-            steps {
-                script {
-                    def scannerHome = tool 'Sonar-scanner'
-                    withSonarQubeEnv('Sonar Local') {
-                        bat "${scannerHome}/bin/sonar-scanner"
-                    }
-                }      
             }
         }
     }
