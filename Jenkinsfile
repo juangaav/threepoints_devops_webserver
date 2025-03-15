@@ -1,7 +1,7 @@
 pipeline {
     agent any
     parameters {
-        credentials(name: 'Credentials_Threepoints', description: 'Credenciales de usuario y contraseña', defaultValue: 'admin:password', credentialType: 'com.cloudbees.plugins.credentials.impl.UsernamePasswordCredentialsImpl')
+        credentials(name: 'Credentials_Threepoints', description: 'Credenciales de usuario y contraseña', credentialType: 'com.cloudbees.plugins.credentials.impl.UsernamePasswordCredentialsImpl')
     }
     stages {
         stage('Stage: Checkout') {
@@ -46,7 +46,8 @@ pipeline {
                     if (!fileExists(dockerPath.replaceAll('"', ''))) {
                         error "Docker executable not found at ${dockerPath}"
                     }
-
+                    
+                    // Execute the Docker build command
                     bat "${dockerPath} build -t devops_ws ."
                 }
             }
@@ -60,7 +61,7 @@ pipeline {
             steps {
                 script {
                     def scannerHome = tool 'Sonar-scanner'
-                    withSonarQubeEnv('Sonar Local') {
+                    withSonarQubeEnv('Sonar Local') { // If you have configured more than one global server connection, you can specify its name
                         bat "${scannerHome}/bin/sonar-scanner"
                     }
                 }      
