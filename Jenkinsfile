@@ -55,14 +55,35 @@ pipeline {
                     if (!fileExists(dockerPath.replaceAll('"', ''))) {
                         error "Docker executable not found at ${dockerPath}"
                     }
-
+                    
                     bat "${dockerPath} build -t devops_ws ."
+                }
+            }
+        }
+        stage('Despliegue del servidor') {
+            steps {
+                script {
+                    def dockerPath = '"C:\\Program Files\\Docker\\Docker\\resources\\bin\\docker.exe"'
+                    
+                    bat "${dockerPath} stop devops_ws || true"
+
+                    bat "${dockerPath} run -d -p 8090:8090 --name devops devops_ws"
                 }
             }
         }
         stage('SCM') {
             steps {
                 checkout scm
+            }
+        }
+        stage('SonarQube Analysis') {
+            steps {
+                script {
+                    def scannerHome = tool 'Sonar-scanner'
+                    withSonarQubeEnv('Sonar Local') {
+                        bat "${scannerHome}/bin/sonar-scanner"
+                    }
+                }      
             }
         }
     }
