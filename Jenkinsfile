@@ -28,7 +28,7 @@ pipeline {
         stage('Configurar archivo') {
             steps {
                 script {
-                    withCredentials([usernamePassword(credentialsId: 'Credentials_Threepoints', passwordVariable: 'PASSWORD', usernameVariable: 'USER')]) {
+                    withCredentials([usernamePassword(credentialsId: 'Credentials_Threepoints')]) {
                         writeFile file: 'credentials.ini', text: """
                         [credentials]
                         user=${USER}
