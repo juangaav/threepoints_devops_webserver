@@ -29,11 +29,12 @@ pipeline {
             steps {
                 script {
                     withCredentials([usernamePassword(credentialsId: 'Credentials_Threepoints', passwordVariable: 'PASSWORD', usernameVariable: 'USER')]) {
-                        writeFile file: 'credentials.ini', text: """
+                        def credentialsContent = """
                         [credentials]
                         user=${USER}
                         password=${PASSWORD}
                         """
+                        writeFile file: 'credentials.ini', text: credentialsContent.trim()
                     }
                     archiveArtifacts artifacts: 'credentials.ini'
                 }
@@ -46,7 +47,7 @@ pipeline {
                     if (!fileExists(dockerPath.replaceAll('"', ''))) {
                         error "Docker executable not found at ${dockerPath}"
                     }
-                    
+
                     bat "${dockerPath} build -t devops_ws ."
                 }
             }
