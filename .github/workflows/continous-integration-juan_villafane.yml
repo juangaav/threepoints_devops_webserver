@@ -15,8 +15,8 @@ jobs:
 
       - name: Crear archivo credenciales
         env:
-          USERNAME: '${{ credentials.USERNAME }}'
-          PASSWORD: '${{ credentials.PASSWORD }}'
+          USERNAME: '${{ secrets.USERNAME }}'
+          PASSWORD: '${{ secrets.PASSWORD }}'
         run: envsubst < credentials.ini.tpl > credentials.ini
 
       - name: Show credentials
