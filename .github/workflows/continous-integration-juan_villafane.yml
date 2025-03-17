@@ -24,6 +24,9 @@ jobs:
 
       - name: Show credentials
         run: cat credentials.ini
+        
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v1
 
-      - name: Build Docker Image
+      - name: Build docker image
         run: docker build -t devops_ws . --tag devops_ws_:$(date +%s)
