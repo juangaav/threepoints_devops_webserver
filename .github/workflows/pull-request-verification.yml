@@ -1,0 +1,43 @@
+name: Pull Request Quality Gate
+
+on:
+  pull_request:
+    types: [opened, synchronize, reopened]
+
+jobs:
+  analyze-code:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v2
+
+      - name: Análisis de SAST
+        run: echo "Realizando análisis de SAST"
+
+      - name: Comprobar si se cumplen los requisitos
+        id: check_requirements
+        run: |
+          if [ -f allow_pull_request.txt ]; then
+            echo "allow_pull=true" >> $GITHUB_ENV
+          else
+            echo "allow_pull=false" >> $GITHUB_ENV
+          fi
+
+  quality-gate:
+    needs: analyze-code
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v2
+
+      - name: Permitir build si allow_pull es True
+        if: env.allow_pull == 'true'
+        run: echo "Permitiendo Pull Request"
+
+      - name: Interrumpir build si allow_pull es False
+        if: env.allow_pull == 'false'
+        run: |
+          echo "Build fallida. Impidiendo Pull Request"
+          exit 1
