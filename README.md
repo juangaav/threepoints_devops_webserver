@@ -5,7 +5,7 @@ Proyecto node de pruebas para usarlo como modelo en un ciclo CI/CD de DevOps par
 ## Install
 
 Para ejecutarlo, hace falta instalarlo como un docker estándar:
-
+ 
 ```bash
 $: docker build --tag node_devops .
 $: docker run -d -p 8090:8090 -it node_devops
