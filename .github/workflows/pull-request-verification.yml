@@ -4,6 +4,8 @@ on:
   pull_request:
     types: [opened, synchronize, reopened]
     branches: [master, feature/**, develop]
+  pull_request_review:
+    types: [submitted, edited]  
 
 jobs:
   analyze-code:
