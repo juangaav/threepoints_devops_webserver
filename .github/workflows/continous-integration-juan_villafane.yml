@@ -1,0 +1,29 @@
+name: Push to Master Workflow
+
+on:
+  push:
+    branches:
+      - master
+
+jobs:
+  build:
+    runs-on: windows-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v2
+
+      - name: Pruebas de SAST
+        run: echo "Ejecución de pruebas de SAST"
+
+      - name: Crear archivo de credenciales
+        run: |
+          echo "[secrets]" > credentials.ini
+          echo "USERNAME = \${{ secrets.USERNAME }}" >> credentials.ini
+          echo "PASSWORD = \${{ secrets.PASSWORD }}" >> credentials.ini
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v1
+
+      - name: Build docker image
+        run: docker build -t devops_ws . --tag devops_ws_:$(date +%s)
