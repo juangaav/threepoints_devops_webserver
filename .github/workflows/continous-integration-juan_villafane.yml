@@ -10,8 +10,7 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-
-      - name: Pruebas de SAST
+      - name: Pruebas de SAST 
         run: echo "Ejecución de pruebas de SAST"
 
       - name: Crear archivo credenciales
@@ -21,4 +20,4 @@ jobs:
         run: envsubst < credentials.ini.tpl > credentials.ini
 
       - name: Show credentials
-        run: cat conf/credentials.ini
+        run: cat credentials.ini
