@@ -3,7 +3,7 @@ name: Pull Request Quality Gate
 on:
   pull_request:
     types: [opened, synchronize, reopened]
-    branches: [master]
+    branches: [master, feature/**, develop]
 
 jobs:
   analyze-code:
